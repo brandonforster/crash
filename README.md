@@ -12,24 +12,24 @@ Due October 1, 2013
 - After started, it prints a prints a prompt “#” and reads a command line terminated by newline.
 ######Interpret the following command lines:
 
-- \# quit
+- `# quit`
 
 - terminates the program
 
-- \# run command ... 
+- `# run command` 
 
-- Interprets the first word as the full path to the program to execute, and the others as parameters. It uses fork() + exec() to start the program with the corresponding parameters, and waits until the program terminates (use the waitpid() call). 
-  - For instance ```run /usr/bin/xterm``` would bring up a terming, but the prompt would not return until the terminal is closed.
+  - Interprets the first word as the full path to the program to execute, and the others as parameters. It uses `fork()` + `exec()` to start the program with the corresponding parameters, and waits until the program terminates (use the `waitpid()` call). 
+  - For instance `run /usr/bin/xterm` would bring up a terming, but the prompt would not return until the terminal is closed.
 
   - Display an error message if the specified program cannot be found or cannot be executed.  
 
-- \# background command...
+- `# background command`
 
-  - It is similar to the run command, but it immediately prints the PID of the program it started, and returns the prompt. 
+  - It is similar to the `run` command, but it immediately prints the PID of the program it started, and returns the prompt. 
 
-- \# murder PID
+- `# murder PID`
 
-  - Immediately terminate the program with the specific PID (presumably started from this command line interpreter). Use the kill() function call to send a SIGKILL signal to the program. Display success or failure. 
+  - Immediately terminate the program with the specific PID (presumably started from this command line interpreter). Use the `kill()` function call to send a SIGKILL signal to the program. Display success or failure. 
 
 To help you, you might want to read a tutorial on 
      http://www.yolinux.com/TUTORIALS/ForkExecProcesses.html
