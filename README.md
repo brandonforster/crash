@@ -14,7 +14,7 @@ Due October 1, 2013
 
 - `# quit`
 
-- terminates the program
+  - terminates the program
 
 - `# run command` 
 
