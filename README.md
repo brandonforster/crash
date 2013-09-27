@@ -14,7 +14,7 @@ Due October 1, 2013
 
 - `# quit`
 
-- terminates the program
+  - terminates the program
 
 - `# run command` 
 
@@ -45,8 +45,8 @@ For extra credit, implement any of these
 •	Support for if-then-else statement.
 Note that your implementation does not necessarily follow the same syntax as the one in shells such as bash. Please provide a description and example of use.  
 
-What to submit:
+#####What to submit:
 
-•	The code as a single .c or .cpp file.
-•	If you implemented the extra credit part: a text file describing the syntax of the implementation, and example of use.
+- The code as a single .c or .cpp file.
+- If you implemented the extra credit part: a text file describing the syntax of the implementation, and example of use.
 
