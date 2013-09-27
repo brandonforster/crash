@@ -13,7 +13,7 @@
 
 int main(int argc, char *argv[])
 {
-	char line[256];
+	char  line[32];
 
 	while(TRUE)	
 	{
@@ -22,22 +22,26 @@ int main(int argc, char *argv[])
 	
 		if (fgets(line, sizeof line, stdin) != NULL)
 		{
-			if (strcmp(line, "quit\n") == 0)
+			char* cmd;
+			int   arg;
+			sscanf(line, "%s %d", cmd, &arg);
+				
+			if (strcmp(cmd, "quit") == 0)
 			{
 				runQuit();
 			}
 
-			else if (strcmp(line, "run\n") == 0)
+			else if (strcmp(cmd, "run") == 0)
 			{
 				runRun();
 			}
 	
-			else if (strcmp(line, "background\n") == 0)
+			else if (strcmp(cmd, "background") == 0)
 			{
 				runBackground();
 			}
 	
-			else if (strcmp(line, "murder\n") == 0)
+			else if (strcmp(cmd, "murder") == 0)
 			{
 				runMurder();
 			}
