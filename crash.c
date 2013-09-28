@@ -11,21 +11,24 @@
 #define TRUE 1
 #define FALSE 0
 
-int main(int argc, char *argv[])
-{
-	char  line[32];
+#define LINE_SIZE 256
 
+int main()
+{
 	while(TRUE)	
 	{
 		// print the prompt
 		printf("# ");
 	
-		if (fgets(line, sizeof line, stdin) != NULL)
+		// declare our strings for the two parts of input
+		char* cmd= NULL;
+		char* args= NULL;
+	
+		if (getUserCommand(&cmd, &args) != NULL)
 		{
-			char* cmd;
-			int   arg;
-			sscanf(line, "%s %d", cmd, &arg);
-				
+			printf("cmd is %s\n",cmd);	
+			printf("args is %s\n",args);
+
 			if (strcmp(cmd, "quit") == 0)
 			{
 				runQuit();
@@ -48,10 +51,58 @@ int main(int argc, char *argv[])
 
 			else
 			{
-				printf("no such command: %s", line);
+				printf("no such command: %s", cmd);
 			}
 		}
+		free(cmd);
+		free(args);
 	}
+}
+
+int getUserCommand(char** cmd, char** args)
+{
+	int retVal= NULL;
+
+	char c= '\0';
+	int  i= 0;
+	char buffer[LINE_SIZE];
+
+	// read characters until a space or EOF to get the cmd
+	do
+	{
+		c= getchar();
+		buffer[i]= c;
+		i++;
+	}while ((c != ' ') || (c != EOF));
+	
+	// format what's in buffer to form cmd
+	buffer[(i+1)]= '\0'
+
+	//copy buffer into cmd
+	*cmd= malloc((i+1));
+	*cmd= &buffer;
+	
+	// store how big c is
+	int cmdLen= i; 
+	
+	// do the same for args, this time read everything until EOF
+	do
+	{
+		c= getchar();
+		buffer[i]= c;
+		i++;
+	}while (c != EOF);
+
+	// format what's in buffer to form args 
+	buffer[(i+1)]= '\0'
+
+	//copy buffer into cmd
+	*args= malloc(((i+1)-cmdLen));
+	*args= &buffer[cmdLen];
+
+	retVal = 1;
+
+	return retVal;
 }
 
 int runQuit()

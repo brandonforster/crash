@@ -14,3 +14,4 @@ int runBackground(char* command);
 
 int runMurder(int pid);
 
+int getUserCommand(char** cmd, char** args);
