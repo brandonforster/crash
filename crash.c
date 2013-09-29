@@ -20,18 +20,18 @@
 
 int main()
 {
+	// declare our strings for the two parts of input
+	char* cmd= NULL;
+	char* args[ARG_SIZE];
+
+	int i= 0;
+	for (i= 0; i< ARG_SIZE; i++)
+		args[i]= NULL;
+	
 	while(TRUE)	
 	{
 		// print the prompt
 		printf("# ");
-	
-		// declare our strings for the two parts of input
-		char* cmd= NULL;
-		char* args[ARG_SIZE];
-
-		int i= 0;
-		for (i= 0; i< ARG_SIZE; i++)
-			args[i]= NULL;
 	
 		if (getUserCommand(&cmd, &args) != 0)
 		{
@@ -115,16 +115,15 @@ int getUserCommand(char** cmd, char** args)
 	*cmd= malloc(cmdLen);
 	buffer[cmdLen]= '\0';
 	strcpy(*cmd, buffer);
-
 	// there are no args
-	if (cmdLen= lineLen)
+	if (cmdLen == lineLen)
 		return 1;
 
 	// copy the args from the buffer, skipping over cmd's term character
 	// find the first space, whatever's here is nex arg
 	int j= 0;
-	int stringStart= cmdLen+1;
-	for (i= (cmdLen+ 1); i< lineLen; i++)
+	int stringStart= (cmdLen+ 1);
+	for (i= cmdLen; i< lineLen; i++)
 	{
 		if ((buffer[i] == ' ') || (buffer[i] == '\n'))
 		{
@@ -138,10 +137,10 @@ int getUserCommand(char** cmd, char** args)
 	}
 
 	// make sure we actually did something
-	if ((*cmd != NULL) && (*args != NULL))
-		return 1;
-	else
+	if ((*cmd == NULL) && (*args == NULL))
 		return 0;
+	else
+		return 1;
 }
 
 int runQuit()
