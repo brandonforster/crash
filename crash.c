@@ -94,7 +94,9 @@ int getUserCommand(char** cmd, char** args)
 	*args= malloc((lineLen-cmdLen));
 	strcpy(*args, &buffer[(cmdLen+1)]);
 
-	retVal = 1;
+	// make sure we actually did something
+	if ((*cmd != NULL) && (*args != NULL))
+		retVal = 1;
 
 	return retVal;
 }
