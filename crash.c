@@ -35,8 +35,6 @@ int main()
 	
 		if (getUserCommand(&cmd, &args) != 0)
 		{
-for (i=0;i<ARG_SIZE;i++)
-printf("%s\n",args[i]);
 			if (strcmp(cmd, "quit") == 0)
 			{
 				runQuit();
