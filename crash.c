@@ -11,6 +11,8 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <sys/signal.h>
+#include <stdint.h> // allows intmax_t as recommended by
+                    // http://stackoverflow.com/questions/7600304/how-to-add-a-pid-t-to-a-string-in-c
 
 #define TRUE 1
 #define FALSE 0
@@ -47,7 +49,12 @@ int main()
 	
 			else if (strcmp(cmd, "background") == 0)
 			{
-				runBackground(args);
+				pid_t pid;
+				pid= runBackground(args);
+				if (pid > 0)
+					printf("process backgrounded, id is: %jd\n",(intmax_t) pid);
+				else
+					printf("error: process not backgrounded\n");
 			}
 	
 			else if (strcmp(cmd, "murder") == 0)
@@ -151,11 +158,51 @@ int runQuit()
 
 int runRun(char** args)
 {
-	return 0;
+	pid_t pid;
+	int status;
+
+	// fork the process
+	pid= fork();
+	
+	// check for failure. main will handle the error
+	if (pid < 0)
+		return 0;
+
+	// for the child
+	else if (pid == 0)
+	{
+		// if execution doesn't return an error call
+		if (execvp(*args, args) < 0)
+			return 0;
+	}
+
+	// for the parent
+	else
+	{
+		// hurry up and wait
+		while (wait(&status) != pid);
+	}
 }
 
-int runBackground(char** args)
+pid_t runBackground(char** args)
 {
-	return 0;
+	pid_t pid;
+
+	// fork the process
+	pid= fork();
+	
+	// check for failure. main will handle the error
+	if (pid < 0)
+		return 0;
+
+	// for the child
+	else if (pid == 0)
+	{
+		// if the execution call doesn't return an error code
+		if (execvp(*args, args) < 0)
+			return 0;
+	}
+
+	return pid;
 }
 
