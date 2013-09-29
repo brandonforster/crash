@@ -8,6 +8,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/signal.h>
 
 #define TRUE 1
 #define FALSE 0
@@ -32,6 +35,8 @@ int main()
 	
 		if (getUserCommand(&cmd, &args) != 0)
 		{
+for (i=0;i<ARG_SIZE;i++)
+printf("%s\n",args[i]);
 			if (strcmp(cmd, "quit") == 0)
 			{
 				runQuit();
@@ -39,17 +44,35 @@ int main()
 
 			else if (strcmp(cmd, "run") == 0)
 			{
-				runRun();
+				runRun(args);
 			}
 	
 			else if (strcmp(cmd, "background") == 0)
 			{
-				runBackground();
+				runBackground(args);
 			}
 	
 			else if (strcmp(cmd, "murder") == 0)
 			{
-				runMurder();
+				if (args[0] == NULL)
+				{
+					printf("you need an argument to murder\n");
+					continue;
+				}
+
+				pid_t target;
+				if (sscanf(args[0], "%d", &target) == EOF)
+				{
+					printf("%s is not a valid argument to murder\n",args[0]);
+					continue;
+				}
+				else
+				{
+					if (kill(target, SIGKILL) == 0)
+						printf("it is done. %s is dead.\n", args[0]);
+					else
+						printf("there were... complications. %s is not dead.\n", args[0]);
+				}
 			}
 
 			else
@@ -129,17 +152,13 @@ int runQuit()
 	return 0;
 }
 
-int runRun(char* command)
+int runRun(char** args)
 {
 	return 0;
 }
 
-int runBackground(char* command)
+int runBackground(char** args)
 {
 	return 0;
 }
 
-int runMurder(int pid)
-{
-	return 0;
-}

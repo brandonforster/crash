@@ -9,9 +9,7 @@ int getUserCommand(char** cmd, char** args);
 
 int runQuit();
 
-int runRun(char* command);
+int runRun(char** args);
 
-int runBackground(char* command);
-
-int runMurder(int pid);
+int runBackground(char** args);
 
