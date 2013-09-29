@@ -26,9 +26,6 @@ int main()
 	
 		if (getUserCommand(&cmd, &args) != NULL)
 		{
-			printf("cmd is %s\n",cmd);	
-			printf("args is %s\n",args);
-
 			if (strcmp(cmd, "quit") == 0)
 			{
 				runQuit();
@@ -67,38 +64,35 @@ int getUserCommand(char** cmd, char** args)
 	int  i= 0;
 	char buffer[LINE_SIZE];
 
-	// read characters until a space or EOF to get the cmd
+	// read characters into a buffer until EOF
 	do
 	{
 		c= getchar();
 		buffer[i]= c;
 		i++;
-	}while ((c != ' ') || (c != EOF));
-	
-	// format what's in buffer to form cmd
-	buffer[(i+1)]= '\0'
+	}while ((c != EOF) && (c != '\n'));
 
-	//copy buffer into cmd
-	*cmd= malloc((i+1));
-	*cmd= &buffer;
+	// add term char
+	int lineLen= i;
+	buffer[lineLen]='\0';
 	
-	// store how big c is
-	int cmdLen= i; 
-	
-	// do the same for args, this time read everything until EOF
-	do
+	// find the first space, whatever's here is our cmd
+	for (i= 0; i< lineLen; i++)
 	{
-		c= getchar();
-		buffer[i]= c;
-		i++;
-	}while (c != EOF);
+		if ((buffer[i] == ' ') || (buffer[i] == '\n'))
+			break;
+	}
 
-	// format what's in buffer to form args 
-	buffer[(i+1)]= '\0'
+	int cmdLen = i;
 
-	//copy buffer into cmd
-	*args= malloc(((i+1)-cmdLen));
-	*args= &buffer[cmdLen];
+	// add a term character for cmd and copy cmd from buffer
+	*cmd= malloc(cmdLen);
+	buffer[cmdLen]= '\0';
+	strcpy(*cmd, buffer);
+
+	// copy the args from the buffer, skipping over cmd's term character
+	*args= malloc((lineLen-cmdLen));
+	strcpy(*args, &buffer[(cmdLen+1)]);
 
 	retVal = 1;
 
