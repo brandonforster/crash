@@ -13,3 +13,5 @@ int runRun(char** args);
 
 int runBackground(char** args);
 
+int runMurder(char** args);
+

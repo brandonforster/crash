@@ -59,25 +59,7 @@ int main()
 	
 			else if (strcmp(cmd, "murder") == 0)
 			{
-				if (args[0] == NULL)
-				{
-					printf("you need an argument to murder\n");
-					continue;
-				}
-
-				pid_t target;
-				if (sscanf(args[0], "%d", &target) == EOF)
-				{
-					printf("%s is not a valid argument to murder\n",args[0]);
-					continue;
-				}
-				else
-				{
-					if (kill(target, SIGKILL) == 0)
-						printf("it is done. %s is dead.\n", args[0]);
-					else
-						printf("there were... complications. %s is not dead.\n", args[0]);
-				}
+				runMurder(args);
 			}
 
 			else
@@ -204,5 +186,34 @@ pid_t runBackground(char** args)
 	}
 
 	return pid;
+}
+
+int runMurder(char** args)
+{
+	if (args[0] == NULL)	
+	{
+		printf("you need an argument to murder\n");		
+		return 0;
+	}
+
+	pid_t target;
+	if (sscanf(args[0], "%d", &target) == EOF)
+	{
+		printf("%s is not a valid argument to murder\n",args[0]);
+		return 0;
+	}
+	else
+	{
+		if (kill(target, SIGKILL) == 0)
+		{
+			printf("it is done. %s is dead.\n", args[0]);
+			return 1;
+		}
+		else
+		{
+			printf("there were... complications. %s is not dead.\n", args[0]);
+			return 0;
+		}
+	}
 }
 
