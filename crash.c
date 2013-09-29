@@ -67,10 +67,10 @@ int main()
 				printf("no such command: %s\n", cmd);
 			}
 		}
-		free(cmd);
-		for (i= 0; i< ARG_SIZE; i++)
-			free(args[i]);
 	}
+	free(cmd);
+	for (i= 0; i< ARG_SIZE; i++)	
+		free(args[i]);
 }
 
 int getUserCommand(char** cmd, char** args)
