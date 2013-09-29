@@ -5,6 +5,7 @@
 // crash.h
 // A crappy bash shell.
 
+int getUserCommand(char** cmd, char** args);
 
 int runQuit();
 
@@ -14,4 +15,3 @@ int runBackground(char* command);
 
 int runMurder(int pid);
 
-int getUserCommand(char** cmd, char** args);

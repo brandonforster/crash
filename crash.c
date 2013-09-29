@@ -7,11 +7,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define TRUE 1
 #define FALSE 0
 
-#define LINE_SIZE 256
+#define LINE_SIZE 512
+#define ARG_SIZE 32
 
 int main()
 {
@@ -22,9 +24,13 @@ int main()
 	
 		// declare our strings for the two parts of input
 		char* cmd= NULL;
-		char* args= NULL;
+		char* args[ARG_SIZE];
+
+		int i= 0;
+		for (i= 0; i< ARG_SIZE; i++)
+			args[i]= NULL;
 	
-		if (getUserCommand(&cmd, &args) != NULL)
+		if (getUserCommand(&cmd, &args) != 0)
 		{
 			if (strcmp(cmd, "quit") == 0)
 			{
@@ -48,18 +54,17 @@ int main()
 
 			else
 			{
-				printf("no such command: %s", cmd);
+				printf("no such command: %s\n", cmd);
 			}
 		}
 		free(cmd);
-		free(args);
+		for (i= 0; i< ARG_SIZE; i++)
+			free(args[i]);
 	}
 }
 
 int getUserCommand(char** cmd, char** args)
 {
-	int retVal= NULL;
-
 	char c= '\0';
 	int  i= 0;
 	char buffer[LINE_SIZE];
@@ -84,21 +89,38 @@ int getUserCommand(char** cmd, char** args)
 	}
 
 	int cmdLen = i;
-
+	
 	// add a term character for cmd and copy cmd from buffer
 	*cmd= malloc(cmdLen);
 	buffer[cmdLen]= '\0';
 	strcpy(*cmd, buffer);
 
+	// there are no args
+	if (cmdLen= lineLen)
+		return 1;
+
 	// copy the args from the buffer, skipping over cmd's term character
-	*args= malloc((lineLen-cmdLen));
-	strcpy(*args, &buffer[(cmdLen+1)]);
+	// find the first space, whatever's here is nex arg
+	int j= 0;
+	int stringStart= cmdLen+1;
+	for (i= (cmdLen+ 1); i< lineLen; i++)
+	{
+		if ((buffer[i] == ' ') || (buffer[i] == '\n'))
+		{
+			// put a term where we found this space
+			args[j]= malloc(((i- stringStart)+1));
+			buffer[i]= '\0';
+			strcpy(args[j], &buffer[stringStart]);
+			j++;
+			stringStart= i+1;
+		}
+	}
 
 	// make sure we actually did something
 	if ((*cmd != NULL) && (*args != NULL))
-		retVal = 1;
-
-	return retVal;
+		return 1;
+	else
+		return 0;
 }
 
 int runQuit()
