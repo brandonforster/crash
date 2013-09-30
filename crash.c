@@ -277,12 +277,15 @@ int runFor(char** args)
 
 	else
 	{	
+		// copy the run command into 2 so we can store i in 3
+		strcpy(args[2], args[3]);
+
 		// counting up for loop
 		if (init < limit)
 		{
 			for (i= init; i< limit; i+= inc)
 			{
-				sprintf(args[2], "%d", i);
+				sprintf(args[3], "%d", i);
 				runRun(&args[2]);
 			}
 		}
@@ -292,7 +295,7 @@ int runFor(char** args)
 		{
 			for (i= init; i> limit; i+= inc)
 			{
-				sprintf(args[2], "%d", i);
+				sprintf(args[3], "%d", i);
 				runRun(&args[2]);
 			}
 		}
