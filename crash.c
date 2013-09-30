@@ -46,7 +46,8 @@ int main()
 
 			else if (strcmp(cmd, "run") == 0)
 			{
-				runRun(args);
+				if (runRun(args) == 0)
+					printf("error: process not run\n");
 			}
 	
 			else if (strcmp(cmd, "background") == 0)
@@ -89,6 +90,10 @@ int getUserCommand(char** cmd, char** args)
 	// read characters into a buffer until EOF
 	do
 	{
+		// don't overflow
+		if (i > LINE_SIZE)
+			break;
+
 		c= getchar();
 		buffer[i]= c;
 		i++;
@@ -157,7 +162,10 @@ int runRun(char** args)
 	
 	// check for failure. main will handle the error
 	if (pid < 0)
+	{
+		kill(pid, SIGKILL);
 		return 0;
+	}
 
 	// for the child
 	else if (pid == 0)
@@ -184,7 +192,10 @@ pid_t runBackground(char** args)
 	
 	// check for failure. main will handle the error
 	if (pid < 0)
+	{
+		kill(pid, SIGKILL);
 		return 0;
+	}
 
 	// for the child
 	else if (pid == 0)
@@ -246,9 +257,10 @@ int runFor(char** args)
 		return 0;
 	}
 
-	int init= 0;
-	int limit= 0;
-	int inc= 0;
+	int	init= 	 0;
+	int	limit= 	 0;
+	int	inc= 	 0;
+	char	counter='n';
 
 	if (sscanf(args[0], "%d", &init) == EOF)
 	{
@@ -268,6 +280,18 @@ int runFor(char** args)
 		return 0;
 	}
 
+	if (sscanf(args[3], "%c", &counter) == EOF)
+	{
+		printf("%s is not a valid counter flag\n",args[3]);
+		return 0;
+	}
+
+	if ((counter != 'y') && (counter != 'n'))
+	{
+		printf("%c is not a valid counter flag\n",counter);
+		return 0;
+	}
+
 	int i= 0;
 	if (inc == 0)
 	{
@@ -277,26 +301,67 @@ int runFor(char** args)
 
 	else
 	{	
-		// copy the run command into 2 so we can store i in 3
-		strcpy(args[2], args[3]);
-
-		// counting up for loop
-		if (init < limit)
+		//print the counter
+		if (counter == 'y')
 		{
-			for (i= init; i< limit; i+= inc)
+			// copy the run command into 2 so we can store i in 3
+			args[3]= realloc(args[3], sizeof(args[4]));
+			strcpy(args[3], args[4]);
+
+			// counting up for loop
+			if (init < limit)
 			{
-				sprintf(args[3], "%d", i);
-				runRun(&args[2]);
+				for (i= init; i< limit; i+= inc)
+				{
+					sprintf(args[4], "%d", i);
+					if (runRun(&args[3]) == 0)
+					{
+						printf("error, process %s not started\n",args[3]);
+						return 0;
+					}
+				}
+			}
+
+			// counting down for loop
+			else if (init > limit)
+			{
+				for (i= init; i> limit; i+= inc)
+				{
+					sprintf(args[4], "%d", i);
+					if (runRun(&args[3]) == 0)
+					{
+						printf("error, process %s not started\n",args[3]);
+						return 0;
+					}
+				}
 			}
 		}
-
-		// counting down for loop
-		else if (init > limit)
+		else
 		{
-			for (i= init; i> limit; i+= inc)
+			// counting up for loop
+			if (init < limit)
 			{
-				sprintf(args[3], "%d", i);
-				runRun(&args[2]);
+				for (i= init; i< limit; i+= inc)
+				{
+					if (runRun(&args[4]) == 0)
+					{
+						printf("error, process %s not started\n",args[4]);
+						return 0;
+					}
+				}
+			}
+
+			// counting down for loop
+			else if (init > limit)
+			{
+				for (i= init; i> limit; i+= inc)
+				{
+					if (runRun(&args[4]) == 0)
+					{
+						printf("error, process %s not started\n",args[4]);
+						return 0;
+					}
+				}
 			}
 		}
 	}	
