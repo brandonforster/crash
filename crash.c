@@ -24,15 +24,11 @@ int main()
 {
 	// declare our strings for the two parts of input
 	char* cmd= NULL;
-	char* args[ARG_SIZE];
+	char* args[ARG_SIZE]= {NULL};
 
 	int i= 0;
-	for (i= 0; i< ARG_SIZE; i++)
-		args[i]= NULL;
 
-	int running= TRUE;
-	
-	while(running)	
+	while(TRUE)	
 	{
 		// print the prompt
 		printf("# ");
@@ -41,7 +37,11 @@ int main()
 		{
 			if (strcmp(cmd, "quit") == 0)
 			{
-				running= FALSE;
+				free(cmd);
+				for (i= 0; i< ARG_SIZE; i++)	
+					free(args[i]);
+
+				exit(0);
 			}
 
 			else if (strcmp(cmd, "run") == 0)
@@ -74,10 +74,11 @@ int main()
 				printf("no such command: %s\n", cmd);
 			}
 		}
+printf("what args!\n");
+		free(cmd);
+		for (i= 0; i< ARG_SIZE; i++)	
+			free(args[i]);
 	}
-	free(cmd);
-	for (i= 0; i< ARG_SIZE; i++)	
-		free(args[i]);
 }
 
 int getUserCommand(char** cmd, char** args)
@@ -96,7 +97,7 @@ int getUserCommand(char** cmd, char** args)
 
 	// add term char
 	int lineLen= i;
-	buffer[lineLen]='\0';
+	buffer[(lineLen- 1)]='\0';
 	
 	// find the first space, whatever's here is our cmd
 	for (i= 0; i< lineLen; i++)
@@ -111,10 +112,12 @@ int getUserCommand(char** cmd, char** args)
 	*cmd= malloc(cmdLen);
 	buffer[cmdLen]= '\0';
 	strcpy(*cmd, buffer);
+printf("no args! cmd: %s\n",*cmd);
 	// there are no args
 	if (cmdLen == lineLen)
 		return 1;
 
+printf("args! cmd: %s\n",*cmd);
 	// copy the args from the buffer, skipping over cmd's term character
 	// find the first space, whatever's here is nex arg
 	int j= 0;
@@ -127,6 +130,7 @@ int getUserCommand(char** cmd, char** args)
 			args[j]= malloc(((i- stringStart)+1));
 			buffer[i]= '\0';
 			strcpy(args[j], &buffer[stringStart]);
+printf("arg@%d: %s\n",j,args[j]);
 			j++;
 			stringStart= i+1;
 		}
@@ -273,14 +277,21 @@ int runFor(char** args)
 		if (init < limit)
 		{
 			for (i= init; i< limit; i+= inc)
-				runRun(&args[3]);
+			{
+				sprintf(args[2], "%d", i);
+printf("i:%d arg:%s\n",i,args[2]);
+				runRun(&args[2]);
+			}
 		}
 
 		// counting down for loop
 		else if (init > limit)
 		{
 			for (i= init; i> limit; i+= inc)
-				runRun(&args[3]);
+			{
+				sprintf(args[2], "%d", i);
+				runRun(&args[2]);
+			}
 		}
 	}	
 	return 1;
