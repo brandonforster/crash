@@ -261,9 +261,28 @@ int runFor(char** args)
 	}
 
 	int i= 0;
-	for (i= init; i< limit; i+= inc)
-		runRun(&args[3]);
+	if (inc == 0)
+	{
+		printf("infinite loop detected, aborting...\n");
+		return 0;
+	}
 
+	else
+	{	
+		// counting up for loop
+		if (init < limit)
+		{
+			for (i= init; i< limit; i+= inc)
+				runRun(&args[3]);
+		}
+
+		// counting down for loop
+		else if (init > limit)
+		{
+			for (i= init; i> limit; i+= inc)
+				runRun(&args[3]);
+		}
+	}	
 	return 1;
 }
 
