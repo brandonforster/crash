@@ -74,7 +74,6 @@ int main()
 				printf("no such command: %s\n", cmd);
 			}
 		}
-printf("what args!\n");
 		free(cmd);
 		for (i= 0; i< ARG_SIZE; i++)	
 			free(args[i]);
@@ -96,14 +95,18 @@ int getUserCommand(char** cmd, char** args)
 	}while ((c != EOF) && (c != '\n'));
 
 	// add term char
-	int lineLen= i;
-	buffer[(lineLen- 1)]='\0';
+	int lineLen= (i- 1);
+	buffer[lineLen]='\0';
 	
+	i= 0;
+
 	// find the first space, whatever's here is our cmd
-	for (i= 0; i< lineLen; i++)
+	while (i < lineLen)
 	{
 		if ((buffer[i] == ' ') || (buffer[i] == '\n'))
 			break;
+
+		i++;
 	}
 
 	int cmdLen = i;
@@ -112,28 +115,29 @@ int getUserCommand(char** cmd, char** args)
 	*cmd= malloc(cmdLen);
 	buffer[cmdLen]= '\0';
 	strcpy(*cmd, buffer);
-printf("no args! cmd: %s\n",*cmd);
 	// there are no args
 	if (cmdLen == lineLen)
 		return 1;
 
-printf("args! cmd: %s\n",*cmd);
+	// increment i so it's at stringStart
+	i++;
+
 	// copy the args from the buffer, skipping over cmd's term character
 	// find the first space, whatever's here is nex arg
 	int j= 0;
 	int stringStart= (cmdLen+ 1);
-	for (i= cmdLen; i< lineLen; i++)
+	while(i<= lineLen)
 	{
-		if ((buffer[i] == ' ') || (buffer[i] == '\n'))
+		if ((buffer[i] == ' ') || (buffer[i] == '\n') || (buffer[i]== '\0'))
 		{
 			// put a term where we found this space
 			args[j]= malloc(((i- stringStart)+1));
 			buffer[i]= '\0';
 			strcpy(args[j], &buffer[stringStart]);
-printf("arg@%d: %s\n",j,args[j]);
 			j++;
 			stringStart= i+1;
 		}
+		i++;
 	}
 
 	// make sure we actually did something
@@ -279,7 +283,6 @@ int runFor(char** args)
 			for (i= init; i< limit; i+= inc)
 			{
 				sprintf(args[2], "%d", i);
-printf("i:%d arg:%s\n",i,args[2]);
 				runRun(&args[2]);
 			}
 		}
