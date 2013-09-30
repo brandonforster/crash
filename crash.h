@@ -7,11 +7,11 @@
 
 int getUserCommand(char** cmd, char** args);
 
-int runQuit();
-
 int runRun(char** args);
 
 int runBackground(char** args);
 
 int runMurder(char** args);
+
+int runFor(char** args);
 

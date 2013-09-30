@@ -29,8 +29,10 @@ int main()
 	int i= 0;
 	for (i= 0; i< ARG_SIZE; i++)
 		args[i]= NULL;
+
+	int running= TRUE;
 	
-	while(TRUE)	
+	while(running)	
 	{
 		// print the prompt
 		printf("# ");
@@ -39,7 +41,7 @@ int main()
 		{
 			if (strcmp(cmd, "quit") == 0)
 			{
-				runQuit();
+				running= FALSE;
 			}
 
 			else if (strcmp(cmd, "run") == 0)
@@ -60,6 +62,11 @@ int main()
 			else if (strcmp(cmd, "murder") == 0)
 			{
 				runMurder(args);
+			}
+
+			else if (strcmp(cmd, "for") == 0)
+			{
+				runFor(args);
 			}
 
 			else
@@ -130,12 +137,6 @@ int getUserCommand(char** cmd, char** args)
 		return 0;
 	else
 		return 1;
-}
-
-int runQuit()
-{
-	exit(0);
-	return 0;
 }
 
 int runRun(char** args)
@@ -215,5 +216,54 @@ int runMurder(char** args)
 			return 0;
 		}
 	}
+}
+
+int runFor(char** args)
+{
+	if (args[0] == NULL)
+	{
+		printf("you need an initializer for your for loop\n");		
+		return 0;
+	}
+	
+	if (args[1] == NULL)
+	{
+		printf("you need a limit for your for loop\n");		
+		return 0;
+	}
+		
+	if (args[2] == NULL)
+	{
+		printf("you need an increment for your for loop\n");		
+		return 0;
+	}
+
+	int init= 0;
+	int limit= 0;
+	int inc= 0;
+
+	if (sscanf(args[0], "%d", &init) == EOF)
+	{
+		printf("%s is not a valid initializer\n",args[0]);
+		return 0;
+	}
+	
+	if (sscanf(args[1], "%d", &limit) == EOF)
+	{
+		printf("%s is not a valid limit\n",args[1]);
+		return 0;
+	}
+
+	if (sscanf(args[2], "%d", &inc) == EOF)
+	{
+		printf("%s is not a valid increment\n",args[2]);
+		return 0;
+	}
+
+	int i= 0;
+	for (i= init; i< limit; i+= inc)
+		runRun(&args[3]);
+
+	return 1;
 }
 
